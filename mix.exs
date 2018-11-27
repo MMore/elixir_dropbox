@@ -38,6 +38,6 @@ defmodule ElixirDropbox.Mixfile do
   defp package do
     [maintainers: ["Spiros Gerokostas"],
      licenses: ["MIT"],
-     links: %{ "GitHub" => "https://github.com/sger/elixir_dropbox" }]
+     links: %{ "GitHub" => "https://github.com/netflakes/elixir_dropbox" }]
   end
 end
