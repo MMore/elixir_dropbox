@@ -27,7 +27,7 @@ defmodule ElixirDropbox.Mixfile do
   # Type "mix help deps" for more examples and options
   defp deps do
     [
-      { :httpoison, "~> 0.8" },
+      { :httpoison, "~> 1.0" },
       { :poison, "~> 3.0" },
       { :inch_ex, "~> 0.5", only: [:dev, :test] },
       { :json, "~> 1.0.2" },
