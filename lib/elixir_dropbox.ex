@@ -12,7 +12,7 @@ defmodule ElixirDropbox do
     post_request(client, "#{@base_url}#{url}", body, headers)
   end
 
-  @spec upload_response(HTTPoison.Response.t) :: response
+
   def upload_response(%HTTPoison.Response{status_code: 200, body: body}), do: Poison.decode!(body)
   def upload_response(%HTTPoison.Response{status_code: status_code, body: body }) do
     cond do
@@ -21,7 +21,6 @@ defmodule ElixirDropbox do
     end
   end
 
-   @spec download_response(HTTPoison.Response.t) :: response
    def download_response(response) do
     case response do
       {:ok, %{body: body, headers: headers, status_code: 200}} ->
