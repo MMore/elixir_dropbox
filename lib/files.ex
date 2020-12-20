@@ -1,9 +1,9 @@
 defmodule ElixirDropbox.Files do
- import ElixirDropbox
- import ElixirDropbox.Utils
+  import ElixirDropbox
+  import ElixirDropbox.Utils
 
- @doc """
- Create folder returns map
+  @doc """
+      Create folder returns map
 
   ## Example
 
@@ -30,6 +30,7 @@ defmodule ElixirDropbox.Files do
   @spec create_folder_to_struct(Client, binary) :: Map
   def create_folder_to_struct(client, path) do
     response = create_folder(client, path)
+
     if is_map(response) do
       to_struct(%ElixirDropbox.Folder{}, response)
     else
@@ -37,15 +38,15 @@ defmodule ElixirDropbox.Files do
     end
   end
 
- @doc """
-  Delete folder returns map
+  @doc """
+   Delete folder returns map
 
-   ## Example
+    ## Example
 
-    ElixirDropbox.Files.delete_folder client, "/Path"
+     ElixirDropbox.Files.delete_folder client, "/Path"
 
-  More info at: https://www.dropbox.com/developers/documentation/http/documentation#files-delete
- """
+   More info at: https://www.dropbox.com/developers/documentation/http/documentation#files-delete
+  """
   def delete_folder(client, path) do
     body = %{"path" => path}
     result = to_string(Poison.Encoder.encode(body, []))
@@ -63,6 +64,7 @@ defmodule ElixirDropbox.Files do
   """
   def delete_folder_to_struct(client, path) do
     response = delete_folder(client, path)
+
     if is_map(response) do
       to_struct(%ElixirDropbox.Folder{}, response)
     else
@@ -121,7 +123,12 @@ defmodule ElixirDropbox.Files do
       :autorename => autorename,
       :mute => mute
     }
-    headers = %{ "Dropbox-API-Arg" => Poison.encode!(dropbox_headers), "Content-Type" => "application/octet-stream" }
+
+    headers = %{
+      "Dropbox-API-Arg" => Poison.encode!(dropbox_headers),
+      "Content-Type" => "application/octet-stream"
+    }
+
     upload_request(client, "files/upload", file, headers)
   end
 
@@ -129,7 +136,8 @@ defmodule ElixirDropbox.Files do
     dropbox_headers = %{
       :path => path
     }
-    headers = %{ "Dropbox-API-Arg" => Poison.encode!(dropbox_headers) }
+
+    headers = %{"Dropbox-API-Arg" => Poison.encode!(dropbox_headers)}
     download_request(client, "files/download", [], headers)
   end
 
@@ -141,19 +149,24 @@ defmodule ElixirDropbox.Files do
 
   def list_files_in_folder(client, path, filtered_by_file_ending \\ "*") do
     folder_metadata = list_folder(client, path)
-    files = folder_metadata["entries"]
-    |> Enum.filter(fn(entry) -> entry[".tag"] == "file" end)
-    |> Enum.filter(fn(entry) ->
+
+    folder_metadata["entries"]
+    |> Enum.filter(fn entry -> entry[".tag"] == "file" end)
+    |> Enum.filter(fn entry ->
       case filtered_by_file_ending do
-        "*" -> true
-        _ -> List.last(String.split(entry["name"], ".")) == String.trim_leading(filtered_by_file_ending, ".")
+        "*" ->
+          true
+
+        _ ->
+          List.last(String.split(entry["name"], ".")) ==
+            String.trim_leading(filtered_by_file_ending, ".")
       end
     end)
   end
 
   def list_filenames_in_folder(client, path, filtered_by_file_ending \\ "*") do
-    filenames = list_files_in_folder(client, path, filtered_by_file_ending)
-    |> Enum.map(fn(entry) -> entry["path_lower"] end)
+    list_files_in_folder(client, path, filtered_by_file_ending)
+    |> Enum.map(fn entry -> entry["path_lower"] end)
   end
 
   def get_thumbnail(client, path, format \\ "jpeg", size \\ "w64h64") do
@@ -162,7 +175,8 @@ defmodule ElixirDropbox.Files do
       :format => format,
       :size => size
     }
-    headers = %{ "Dropbox-API-Arg" => Poison.encode!(dropbox_headers) }
+
+    headers = %{"Dropbox-API-Arg" => Poison.encode!(dropbox_headers)}
     download_request(client, "files/get_thumbnail", [], headers)
   end
 
@@ -170,7 +184,8 @@ defmodule ElixirDropbox.Files do
     dropbox_headers = %{
       :path => path
     }
-    headers = %{ "Dropbox-API-Arg" => Poison.encode!(dropbox_headers) }
+
+    headers = %{"Dropbox-API-Arg" => Poison.encode!(dropbox_headers)}
     download_request(client, "files/get_preview", [], headers)
   end
 
@@ -178,5 +193,5 @@ defmodule ElixirDropbox.Files do
     body = %{"path" => path, "include_media_info" => include_media_info}
     result = to_string(Poison.Encoder.encode(body, []))
     post(client, "/files/get_metadata", result)
-   end
+  end
 end
